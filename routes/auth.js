@@ -71,11 +71,11 @@ router.post("/login", async (req, res) => {
 });
 
 router.post("/verifyToken", async (req, res) => {
-  const { token } = req.body;
-
   try {
+    const token = req.headers.authorization.split(" ")[1];
+
     if (!token) {
-      return res.status(400).json({ message: "No token provided" });
+      return res.status(401).json({ message: "Token is invalid or expired" });
     }
 
     jwt.verify(token, JWT_SECRET, async (err, decoded) => {
