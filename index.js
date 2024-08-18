@@ -5,6 +5,7 @@ const scrapeRouter = require("./routes/scrape"); // Importar la ruta scrape
 const authRouter = require("./routes/auth");
 const { initializeBrowser } = require("./utils/browser");
 const cors = require("cors");
+const { protect } = require("./routes/middlewares/authMiddleware");
 
 dotenv.config();
 
@@ -26,7 +27,7 @@ async function startServer() {
   const { context } = await initializeBrowser();
 
   // Pass the context to the scrape router
-  app.use("/scrape", scrapeRouter(context));
+  app.use("/scrape", protect, scrapeRouter(context)); // Protect all routes under "/scrape"
   app.use("/auth", authRouter);
 
   // Connect to MongoDB
