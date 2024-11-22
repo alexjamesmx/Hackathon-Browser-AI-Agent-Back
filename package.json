@@ -10,7 +10,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.3",
     "openai": "^4.56.0",
-    "playwright-chromium": "^1.46.1",
+    "playwright": "^1.46.1",
     "stopword": "^3.0.1"
   },
   "scripts": {
