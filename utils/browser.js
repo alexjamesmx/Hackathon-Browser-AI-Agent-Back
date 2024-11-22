@@ -1,4 +1,4 @@
-const { chromium } = require("playwright");
+const { chromium } = require("playwright-chromium");
 
 async function initializeBrowser() {
   const browser = await chromium.launch({
@@ -14,5 +14,5 @@ async function initializeBrowser() {
 
   return { browser, context };
 }
-
+//
 module.exports = { initializeBrowser };
