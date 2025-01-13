@@ -1,10 +1,11 @@
-const { chromium } = require("playwright");
+const { chromium } = require("playwright-core");
+const { getChromiumPath } = require("playwright-aws-lambda");
 
 async function initializeBrowser() {
   const browser = await chromium.launch({
-    executablePath: "/app/browsers/chromium-1129/chrome-linux/chrome",
-    ignoreHTTPSErrors: true,
-    args: ["--ignore-certificate-errors"],
+    args: require("playwright-aws-lambda").defaultArgs,
+    executablePath: await getChromiumPath(),
+    headless: true,
   });
 
   const context = await browser.newContext({
