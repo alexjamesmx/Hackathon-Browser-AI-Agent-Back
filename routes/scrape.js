@@ -1,9 +1,7 @@
 const express = require("express");
 const OpenAI = require("openai");
 const stopword = require("stopword");
-const Website = require("../db/models/Website");
 const dotenv = require("dotenv");
-const jwt = require("jsonwebtoken");
 
 dotenv.config();
 
@@ -16,15 +14,6 @@ module.exports = (context) => {
   const router = express.Router();
   router.post("/", async (req, res) => {
     const url = req.body.url;
-    const token = req.headers.authorization.split(" ")[1];
-
-    if (!token) {
-      return res.status(401).json({ error: "No token provided" });
-    }
-
-    // Verify the token and extract the user ID
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Ensure you have JWT_SECRET in your environment variables
-    const userId = decoded.id; // This assumes that your token contains an 'id' field
 
     if (!url) {
       return res.status(400).json({ error: "URL is required" });
@@ -167,31 +156,6 @@ module.exports = (context) => {
         bestImages
       );
 
-      //replace  the website data from the database if it already exists
-
-      const existingWebsite = await Website.findOne({
-        userId: userId,
-        websiteLink: url,
-      });
-
-      if (existingWebsite) {
-        console.log("Website already exists, updating the data");
-        existingWebsite.website = openAISummary;
-        await existingWebsite.save();
-        console.log("Updated");
-        return res.json(openAISummary);
-      }
-
-      const summaryData = new Website({
-        userId: userId,
-        websiteLink: url,
-        website: openAISummary,
-      });
-
-      console.log("Saving data to MongoDB");
-      await summaryData.save();
-      console.log("Saved");
-
       if (openAISummary === "") {
         return res.status(500).json({ error: "Response is empty" });
       }
@@ -204,48 +168,6 @@ module.exports = (context) => {
       if (page) {
         await page.close();
       }
-    }
-  });
-  //
-  router.get("/history", async (req, res) => {
-    try {
-      const token = req.headers.authorization.split(" ")[1];
-
-      if (!token) {
-        return res.status(401).json({ error: "No token provided" });
-      }
-
-      // Verify the token and extract the user ID
-      const decoded = jwt.verify(token, process.env.JWT_SECRET); // Ensure you have JWT_SECRET in your environment variables
-      const userId = decoded.id; // This assumes that your token contains an 'id' field
-
-      // Find the websites related to this user
-      const websites = await Website.find({ userId: userId }); // Assuming you have a 'user' field in your Website model that stores the user's ID
-      res.json(websites);
-    } catch (error) {
-      console.error("Error fetching websites:", error);
-      res.status(500).json({ error: "Internal Server Error" });
-    }
-  });
-
-  router.delete("/history", async (req, res) => {
-    try {
-      const token = req.headers.authorization.split(" ")[1];
-
-      if (!token) {
-        return res.status(401).json({ error: "No token provided" });
-      }
-
-      // Verify the token and extract the user ID
-      const decoded = jwt.verify(token, process.env.JWT_SECRET); // Ensure you have JWT_SECRET in your environment variables
-      const userId = decoded.id; // This assumes that your token contains an 'id' field
-
-      // Delete all websites related to this user
-      await Website.deleteMany({ userId: userId }); // Assuming you have a 'user' field in your Website model that stores the user's ID
-      res.json({ message: "Deleted all websites" });
-    } catch (error) {
-      console.error("Error deleting websites:", error);
-      res.status(500).json({ error: "Internal Server Error" });
     }
   });
 

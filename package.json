@@ -1,24 +1,19 @@
 {
   "dependencies": {
-    "@tensorflow-models/universal-sentence-encoder": "^1.3.3",
-    "@tensorflow/tfjs": "^4.20.0",
+    "@sparticuz/chromium": "^131.0.1",
     "axios": "^1.7.4",
     "bcryptjs": "^2.4.3",
-    "chromium": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.5.3",
     "openai": "^4.56.0",
-    "playwright-aws-lambda": "^0.11.0",
     "playwright-core": "^1.49.1",
     "stopword": "^3.0.1"
   },
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js",
-    "postinstall": "npx playwright install chromium && npx playwright install-deps"
+    "dev": "nodemon index.js"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
